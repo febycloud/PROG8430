@@ -78,4 +78,38 @@ res<-cor(NumDiamd,method = "spearman")
 round(res,2)
 
 #Model Development
+#Fullmodel
+Dia_lm = lm(Price_FY~Carat.Size_FY+Year_FY+Clar_FY+Col_FY+Cut_FY+Val_FY,data=NumDiamd,na.action = na.omit)
+summary(Dia_lm)
+#Stepwise
+Stp_Dia_lm=step(Dia_lm,details=TRUE)
+summary(Stp_Dia_lm)
+#Forward
+min_model<-lm(Price_FY~1,data=NumDiamd,action=na.omit)
+Fwd_Dia_lm=step(min_model,direction = "forward",scope = (~Carat.Size_FY+Year_FY+Clar_FY+Col_FY+Cut_FY+Val_FY),details=TRUE)
+summary(Fwd_Dia_lm)
+
+#Model Evaluation
+DiaFit<-predict(Dia_lm)
+FullDiaRes<-residuals(Dia_lm)
+StpDiaFit<-predict(Stp_Dia_lm)
+StpDiaRes<-residuals(Stp_Dia_lm)
+FwdDiaFit<-predict(Fwd_Dia_lm)
+FwdDiaRes<-residuals(Fwd_Dia_lm)
+
+#Numercial
+shapiro.test(FullDiaRes)
+shapiro.test(StpDiaRes)
+shapiro.test(FwdDiaRes)
+
+#Graphical
+par(mfrow=c(2,2))
+plot(Dia_lm)
+par(mfrow=c(1,1))
+par(mfrow=c(2,2))
+plot(Stp_Dia_lm)
+par(mfrow=c(1,1))
+par(mfrow=c(2,2))
+plot(Fwd_Dia_lm)
+par(mfrow=c(1,1))
 
